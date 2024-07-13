@@ -1,0 +1,41 @@
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        Random random = new Random();
+
+        List<Player> players = [new Player("Tom", 20), new Player("Andrew", 16)];
+        List<string> games = ["TheWitcher", "Valorant", "CS2", "Dota2", "Honkai"];
+
+        foreach (Player player in players)
+        {
+            player.SetGame(games[random.Next(0, games.Count)]);
+            player.ShowInfo();
+        }
+    }
+}
+
+class Player
+{
+    private string _name;
+
+    private int _age;
+
+    public string Game {get; private set;}
+
+    public Player(string name, int age)
+    {
+        _name = name;
+        _age = age;
+    }
+
+    public void SetGame(string game)
+    {
+        Game = game;
+    }
+
+    public void ShowInfo()
+    {
+        Console.WriteLine($"Игрок {_name} играет в {Game}. Ему {_age} лет.");
+    }
+}
