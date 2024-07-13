@@ -9,7 +9,7 @@ internal class Program
 
         foreach (Player player in players)
         {
-            player.SetGame(games[random.Next(0, games.Count)]);
+            player.SetGame(games[random.Next(games.Count)]);
             player.ShowInfo();
         }
     }
@@ -21,13 +21,13 @@ class Player
 
     private int _age;
 
-    public string Game {get; private set;}
-
     public Player(string name, int age)
     {
         _name = name;
         _age = age;
     }
+
+    public string Game {get; private set;}
 
     public void SetGame(string game)
     {
