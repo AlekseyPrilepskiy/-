@@ -10,23 +10,22 @@ internal class Program
         
         Renderer renderer = new Renderer();
         renderer.ShowPlayer(player);
-
     }
 }
 
 class Player
 {
-    public int PositionX { get; private set; }
-    public int PositionY { get; private set; }
-
-    public char PlayerSymbol { get; private set; }
-
     public Player(int positionX, int positionY, char playerSymbol)
     {
         PositionX = positionX;
         PositionY = positionY;
-        PlayerSymbol = playerSymbol;
+        Character = playerSymbol;
     }
+
+    public int PositionX { get; private set; }
+    public int PositionY { get; private set; }
+
+    public char Character { get; private set; }
 }
 
 class Renderer
@@ -34,6 +33,6 @@ class Renderer
     public void ShowPlayer(Player player)
     {
         Console.SetCursorPosition(player.PositionX, player.PositionY);
-        Console.Write(player.PlayerSymbol);
+        Console.Write(player.Character);
     }
 }
