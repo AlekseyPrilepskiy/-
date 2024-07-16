@@ -1,0 +1,39 @@
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        int playerPositionX = 30;
+        int playerPositionY = 10;
+        char playerSymbol = '@';
+
+        Player player = new Player(playerPositionX, playerPositionY, playerSymbol);
+        
+        Renderer renderer = new Renderer();
+        renderer.ShowPlayer(player);
+
+    }
+}
+
+class Player
+{
+    public int PositionX { get; private set; }
+    public int PositionY { get; private set; }
+
+    public char PlayerSymbol { get; private set; }
+
+    public Player(int positionX, int positionY, char playerSymbol)
+    {
+        PositionX = positionX;
+        PositionY = positionY;
+        PlayerSymbol = playerSymbol;
+    }
+}
+
+class Renderer
+{
+    public void ShowPlayer(Player player)
+    {
+        Console.SetCursorPosition(player.PositionX, player.PositionY);
+        Console.Write(player.PlayerSymbol);
+    }
+}
