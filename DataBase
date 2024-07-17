@@ -9,9 +9,12 @@ internal class Program
         const string CommandExit = "5";
 
         DataBase dataBase = new DataBase();
-        dataBase.AddPlayer();
 
         bool isWork = true;
+
+        int playerId = 1001;
+
+        dataBase.AddPlayer(playerId);
 
         while (isWork)
         {
@@ -31,7 +34,8 @@ internal class Program
             switch (userCommand)
             {
                 case CommandAddPlayer:
-                    dataBase.AddPlayer();
+                    playerId++;
+                    dataBase.AddPlayer(playerId);
                     break;
 
                 case CommandBanPlayer:
@@ -39,7 +43,7 @@ internal class Program
                     break;
 
                 case CommandDeleteBanPlayer:
-                    dataBase.DeleteBanPlayer();
+                    dataBase.UnbanPlayer();
                     break;
 
                 case CommandDeletePlayer:
@@ -58,29 +62,9 @@ internal class Program
     }
 }
 
-class Utils
-{
-    private int _minId;
-    private int _maxId;
-
-    public Utils(int minId, int maxId) 
-    {
-        _minId = minId;
-        _maxId = maxId;
-    }
-
-    public int GetRandomId()
-    {
-        Random random = new Random();
-
-        return random.Next( _minId, _maxId );
-    }
-}
-
 class Player
 {
     private int _level;
-
     private string _nickname;
     private bool _isBanned;
 
@@ -130,11 +114,8 @@ class DataBase
 {
     private List<Player> _players = new List<Player>();
 
-    public void AddPlayer()
+    public void AddPlayer(int id)
     {
-        Utils util = new Utils(10000, 100000);
-        int id = util.GetRandomId();
-
         Console.Write("Введите ник игрока: ");
         string name = Console.ReadLine();
 
@@ -150,80 +131,64 @@ class DataBase
         Console.WriteLine("Игрок добавлен, для продолжения нажмите Enter");
     }
 
-    public void DeletePlayer()
+    public Player FindPlayerOnId()
     {
-        int id = IdInput();
-
-        bool isFindPlayer = false;
+        int id = InputId();
 
         foreach (Player player in _players)
         {
             if (player.Id == id)
             {
-                _players.Remove(player);
-
-                isFindPlayer = true;
-
-                Console.WriteLine("Игрок удаленен, для продолжения нажмите Enter");
-
-                break;
+                return player;
             }
-
         }
 
-        if (isFindPlayer == false)
-        {
-            Console.WriteLine("Игрок не найден");
-        }
+        return null;
     }
 
-    public void BanPlayer()
+    public void DeletePlayer()
     {
-        int id = IdInput();
+        Player player = FindPlayerOnId();
 
-        bool isFindPlayer = false;
-
-        foreach (Player player in _players)
+        if (player != null)
         {
-            if (player.Id == id)
-            {
-                player.Ban();
-
-                isFindPlayer = true;
-
-                break;
-            }
+            _players.Remove(player);
         }
-
-        if (isFindPlayer == false)
+        else
         {
-            Console.WriteLine("Игрок не найден");
+            Console.WriteLine("Игрок не найден.");
         }
 
         Console.WriteLine("Для продолжения нажмите Enter");
     }
 
-    public void DeleteBanPlayer()
+    public void BanPlayer()
     {
-        int id = IdInput();
+        Player player = FindPlayerOnId();
 
-        bool isFindPlayer = false;
-
-        foreach (Player player in _players)
+        if (player != null)
         {
-            if (player.Id == id)
-            {
-                player.Unban();
-
-                isFindPlayer = true;
-
-                break;
-            }
+            player.Ban();
+        }
+        else
+        {
+            Console.WriteLine("Игрок не найден.");
         }
 
-        if (isFindPlayer == false)
+        Console.WriteLine("Для продолжения нажмите Enter");
+    }
+
+    public void UnbanPlayer()
+    {
+        Player player = FindPlayerOnId();
+
+        if (player != null)
         {
-            Console.WriteLine("Игрок не найден");
+            player.Unban();
+        }
+        else
+        {
+            Console.WriteLine("Игрок не найден.");
         }
 
         Console.WriteLine("Для продолжения нажмите Enter");
@@ -241,7 +206,7 @@ class DataBase
         Console.WriteLine();
     }
 
-    public int IdInput()
+    public int InputId()
     {
         Console.Write("Введите id игрока: ");
         int.TryParse(Console.ReadLine(), out int id);
