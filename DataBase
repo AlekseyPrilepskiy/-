@@ -33,23 +33,47 @@ internal class Program
                 case CommandAddPlayer:
                     dataBase.AddPlayer();
                     break;
+
                 case CommandBanPlayer:
                     dataBase.BanPlayer();
                     break;
+
                 case CommandDeleteBanPlayer:
                     dataBase.DeleteBanPlayer();
                     break;
+
                 case CommandDeletePlayer:
                     dataBase.DeletePlayer();
                     break;
+
                 case CommandExit:
                     isWork = false;
                     break;
+
                 default:
                     Console.WriteLine("Такой команды нет.");
                     break;
             }
         }
+    }
+}
+
+class Utils
+{
+    private int _minId;
+    private int _maxId;
+
+    public Utils(int minId, int maxId) 
+    {
+        _minId = minId;
+        _maxId = maxId;
+    }
+
+    public int GetRandomId()
+    {
+        Random random = new Random();
+
+        return random.Next( _minId, _maxId );
     }
 }
 
@@ -70,12 +94,12 @@ class Player
 
     public int Id { get; private set; }
 
-    public void GetInfo()
+    public void ShowInfo()
     {
         Console.WriteLine($"id игрока: {Id}, никнейм: {_nickname}, уровень: {_level}. Есть бан? - {_isBanned}");
     }
 
-    public void MakeBanned()
+    public void Ban()
     {
         if (_isBanned == false)
         {
@@ -88,7 +112,7 @@ class Player
         }
     }
 
-    public void DeleteBan()
+    public void Unban()
     {
         if (_isBanned == true)
         {
@@ -108,15 +132,14 @@ class DataBase
 
     public void AddPlayer()
     {
-        Random random = new Random();
+        Utils util = new Utils(10000, 100000);
+        int id = util.GetRandomId();
 
         Console.Write("Введите ник игрока: ");
         string name = Console.ReadLine();
 
         Console.Write("Какой уровень у персонажа: ");
         int.TryParse(Console.ReadLine(), out int level);
-
-        int id = random.Next(10000, 100000);
 
         bool isBanned = false;
 
@@ -164,7 +187,7 @@ class DataBase
         {
             if (player.Id == id)
             {
-                player.MakeBanned();
+                player.Ban();
 
                 isFindPlayer = true;
 
@@ -190,7 +213,7 @@ class DataBase
         {
             if (player.Id == id)
             {
-                player.DeleteBan();
+                player.Unban();
 
                 isFindPlayer = true;
 
@@ -212,7 +235,7 @@ class DataBase
 
         foreach (Player player in _players)
         {
-            player.GetInfo();
+            player.ShowInfo();
         }
 
         Console.WriteLine();
