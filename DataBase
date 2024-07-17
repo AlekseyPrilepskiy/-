@@ -1,0 +1,228 @@
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        const string CommandAddPlayer = "1";
+        const string CommandBanPlayer = "2";
+        const string CommandDeleteBanPlayer = "3";
+        const string CommandDeletePlayer = "4";
+        const string CommandExit = "5";
+
+        DataBase dataBase = new DataBase();
+        dataBase.AddPlayer();
+
+        bool isWork = true;
+
+        while (isWork)
+        {
+            Console.ReadKey();
+            Console.Clear();
+
+            dataBase.ShowPlayers();
+
+            Console.WriteLine($"{CommandAddPlayer} - добавить игрока");
+            Console.WriteLine($"{CommandBanPlayer} - забанить игрока");
+            Console.WriteLine($"{CommandDeleteBanPlayer} - разбанить игрока");
+            Console.WriteLine($"{CommandDeletePlayer} - удалить игрока");
+            Console.WriteLine($"{CommandExit} - выход");
+
+            string userCommand = Console.ReadLine();
+
+            switch (userCommand)
+            {
+                case CommandAddPlayer:
+                    dataBase.AddPlayer();
+                    break;
+                case CommandBanPlayer:
+                    dataBase.BanPlayer();
+                    break;
+                case CommandDeleteBanPlayer:
+                    dataBase.DeleteBanPlayer();
+                    break;
+                case CommandDeletePlayer:
+                    dataBase.DeletePlayer();
+                    break;
+                case CommandExit:
+                    isWork = false;
+                    break;
+                default:
+                    Console.WriteLine("Такой команды нет.");
+                    break;
+            }
+        }
+    }
+}
+
+class Player
+{
+    private int _level;
+
+    private string _nickname;
+    private bool _isBanned;
+
+    public Player(int id, int level, string nickname, bool isBanned)
+    {
+        _level = level;
+        _nickname = nickname;
+        _isBanned = isBanned;
+        Id = id;
+    }
+
+    public int Id { get; private set; }
+
+    public void GetInfo()
+    {
+        Console.WriteLine($"id игрока: {Id}, никнейм: {_nickname}, уровень: {_level}. Есть бан? - {_isBanned}");
+    }
+
+    public void MakeBanned()
+    {
+        if (_isBanned == false)
+        {
+            _isBanned = true;
+            Console.WriteLine("Игрок забанен");
+        }
+        else
+        {
+            Console.WriteLine("Игрок и так уже в бане");
+        }
+    }
+
+    public void DeleteBan()
+    {
+        if (_isBanned == true)
+        {
+            _isBanned = false;
+            Console.WriteLine("Игрок разбанен");
+        }
+        else
+        {
+            Console.WriteLine("У игрока не было бана");
+        }
+    }
+}
+
+class DataBase
+{
+    private List<Player> _players = new List<Player>();
+
+    public void AddPlayer()
+    {
+        Random random = new Random();
+
+        Console.Write("Введите ник игрока: ");
+        string name = Console.ReadLine();
+
+        Console.Write("Какой уровень у персонажа: ");
+        int.TryParse(Console.ReadLine(), out int level);
+
+        int id = random.Next(10000, 100000);
+
+        bool isBanned = false;
+
+        Player player = new Player(id, level, name, isBanned);
+
+        _players.Add(player);
+
+        Console.WriteLine("Игрок добавлен, для продолжения нажмите Enter");
+    }
+
+    public void DeletePlayer()
+    {
+        int id = IdInput();
+
+        bool isFindPlayer = false;
+
+        foreach (Player player in _players)
+        {
+            if (player.Id == id)
+            {
+                _players.Remove(player);
+
+                isFindPlayer = true;
+
+                Console.WriteLine("Игрок удаленен, для продолжения нажмите Enter");
+
+                break;
+            }
+
+        }
+
+        if (isFindPlayer == false)
+        {
+            Console.WriteLine("Игрок не найден");
+        }
+    }
+
+    public void BanPlayer()
+    {
+        int id = IdInput();
+
+        bool isFindPlayer = false;
+
+        foreach (Player player in _players)
+        {
+            if (player.Id == id)
+            {
+                player.MakeBanned();
+
+                isFindPlayer = true;
+
+                break;
+            }
+        }
+
+        if (isFindPlayer == false)
+        {
+            Console.WriteLine("Игрок не найден");
+        }
+
+        Console.WriteLine("Для продолжения нажмите Enter");
+    }
+
+    public void DeleteBanPlayer()
+    {
+        int id = IdInput();
+
+        bool isFindPlayer = false;
+
+        foreach (Player player in _players)
+        {
+            if (player.Id == id)
+            {
+                player.DeleteBan();
+
+                isFindPlayer = true;
+
+                break;
+            }
+        }
+
+        if (isFindPlayer == false)
+        {
+            Console.WriteLine("Игрок не найден");
+        }
+
+        Console.WriteLine("Для продолжения нажмите Enter");
+    }
+
+    public void ShowPlayers()
+    {
+        Console.WriteLine("Список игроков: ");
+
+        foreach (Player player in _players)
+        {
+            player.GetInfo();
+        }
+
+        Console.WriteLine();
+    }
+
+    public int IdInput()
+    {
+        Console.Write("Введите id игрока: ");
+        int.TryParse(Console.ReadLine(), out int id);
+
+        return id;
+    }
+}
