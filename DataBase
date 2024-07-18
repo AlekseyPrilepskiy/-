@@ -114,6 +114,40 @@ class DataBase
 {
     private List<Player> _players = new List<Player>();
 
+    /*private bool TryGetPlayer(out Player player)
+    {
+        Console.Write("Введите id игрока: ");
+        int.TryParse(Console.ReadLine(), out int id);
+
+        foreach (Player player1 in _players)
+        {
+            if (player1.Id == id)
+            {
+                player = player1;
+                return true;
+            }
+        }
+        player = null;
+        return false;
+    }*/
+    // Не очень пониамаю, как реализовать "Вынесите поиск игрока в отдельный метод  bool TryGetPlayer(out Player player)."//
+
+    private Player FindPlayerOnId()
+    {
+        Console.Write("Введите id игрока: ");
+        int.TryParse(Console.ReadLine(), out int id);
+
+        foreach (Player player in _players)
+        {
+            if (player.Id == id)
+            {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
     public void AddPlayer(int id)
     {
         Console.Write("Введите ник игрока: ");
@@ -129,21 +163,6 @@ class DataBase
         _players.Add(player);
 
         Console.WriteLine("Игрок добавлен, для продолжения нажмите Enter");
-    }
-
-    public Player FindPlayerOnId()
-    {
-        int id = InputId();
-
-        foreach (Player player in _players)
-        {
-            if (player.Id == id)
-            {
-                return player;
-            }
-        }
-
-        return null;
     }
 
     public void DeletePlayer()
@@ -204,13 +223,5 @@ class DataBase
         }
 
         Console.WriteLine();
-    }
-
-    public int InputId()
-    {
-        Console.Write("Введите id игрока: ");
-        int.TryParse(Console.ReadLine(), out int id);
-
-        return id;
     }
 }
