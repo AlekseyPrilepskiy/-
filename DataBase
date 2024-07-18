@@ -8,12 +8,10 @@ internal class Program
         const string CommandDeletePlayer = "4";
         const string CommandExit = "5";
 
-        DataBase dataBase = new DataBase();
-
         bool isWork = true;
-
         int playerId = 1001;
 
+        Database dataBase = new Database();
         dataBase.AddPlayer(playerId);
 
         while (isWork)
@@ -110,43 +108,9 @@ class Player
     }
 }
 
-class DataBase
+class Database
 {
     private List<Player> _players = new List<Player>();
-
-    /*private bool TryGetPlayer(out Player player)
-    {
-        Console.Write("Введите id игрока: ");
-        int.TryParse(Console.ReadLine(), out int id);
-
-        foreach (Player player1 in _players)
-        {
-            if (player1.Id == id)
-            {
-                player = player1;
-                return true;
-            }
-        }
-        player = null;
-        return false;
-    }*/
-    // Не очень пониамаю, как реализовать "Вынесите поиск игрока в отдельный метод  bool TryGetPlayer(out Player player)."//
-
-    private Player FindPlayerOnId()
-    {
-        Console.Write("Введите id игрока: ");
-        int.TryParse(Console.ReadLine(), out int id);
-
-        foreach (Player player in _players)
-        {
-            if (player.Id == id)
-            {
-                return player;
-            }
-        }
-
-        return null;
-    }
 
     public void AddPlayer(int id)
     {
@@ -167,11 +131,13 @@ class DataBase
 
     public void DeletePlayer()
     {
-        Player player = FindPlayerOnId();
+        bool isFindId = TryGetPlayer(out Player player);
 
-        if (player != null)
+        if (isFindId)
         {
             _players.Remove(player);
+
+            Console.WriteLine("Игрок удалён.");
         }
         else
         {
@@ -183,9 +149,9 @@ class DataBase
 
     public void BanPlayer()
     {
-        Player player = FindPlayerOnId();
+        bool isFindId = TryGetPlayer(out Player player);
 
-        if (player != null)
+        if (isFindId)
         {
             player.Ban();
         }
@@ -199,9 +165,10 @@ class DataBase
 
     public void UnbanPlayer()
     {
-        Player player = FindPlayerOnId();
 
-        if (player != null)
+        bool isFindId = TryGetPlayer(out Player player);
+
+        if (isFindId)
         {
             player.Unban();
         }
@@ -223,5 +190,23 @@ class DataBase
         }
 
         Console.WriteLine();
+    }
+
+    private bool TryGetPlayer(out Player rightPlayer)
+    {
+        Console.Write("Введите id игрока: ");
+        int.TryParse(Console.ReadLine(), out int id);
+
+        foreach (Player player in _players)
+        {
+            if (player.Id == id)
+            {
+                rightPlayer = player;
+                return true;
+            }
+        }
+
+        rightPlayer = null;
+        return false;
     }
 }
