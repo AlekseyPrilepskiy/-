@@ -5,7 +5,7 @@ internal class Program
         Player player = new Player();
         PlayTable table1 = new PlayTable(player);
 
-        table1.StartGame();
+        table1.Game();
     }
 }
 
@@ -32,16 +32,16 @@ class Deck
 
     public List<Card> CreateNew()
     {
-        string[] _meanings = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Валет", "Дама", "Король", "Туз"];
-        string[] _suits = ["Пики", "Крести", "Черви", "Буби"];
+        string[] meanings = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Валет", "Дама", "Король", "Туз"];
+        string[] suits = ["Пики", "Крести", "Черви", "Буби"];
 
         List<Card> cards = new List<Card>();
 
-        for (int i = 0; i < _suits.Length; i++)
+        for (int i = 0; i < suits.Length; i++)
         {
-            for (int j = 0; j < _meanings.Length; j++)
+            for (int j = 0; j < meanings.Length; j++)
             {
-                cards.Add(new Card(_meanings[j], _suits[i]));
+                cards.Add(new Card(meanings[j], suits[i]));
             }
         }
 
@@ -70,7 +70,8 @@ class Deck
 
     public Queue<Card> GetCards()
     {
-        return _cards;
+        Queue<Card> copyCards = _cards;
+        return copyCards;
     }
 
     public void Clear()
@@ -116,7 +117,7 @@ class PlayTable
         _player = player;
     }
 
-    public void StartGame()
+    public void Game()
     {
         const string KeyToStop = "N";
 
@@ -142,7 +143,7 @@ class PlayTable
 
                 Console.WriteLine($"Чтобы продолжить брать карты нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
 
-                isRoundStart = CheckUserCommand(KeyToStop);
+                isRoundStart = CheckExit(KeyToStop);
             }
 
             _player.DeleteCards();
@@ -151,11 +152,11 @@ class PlayTable
             Console.WriteLine("Раунд закончился");
             Console.WriteLine($"Чтобы начать новый раунд нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
 
-            isGame = CheckUserCommand(KeyToStop);
+            isGame = CheckExit(KeyToStop);
         }
     }
 
-    private bool CheckUserCommand(string stopKey)
+    private bool CheckExit(string stopKey)
     {
         string userInput = Console.ReadLine();
 
