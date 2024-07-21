@@ -1,0 +1,188 @@
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        Player player = new Player();
+        PlayTable table1 = new PlayTable(player);
+
+        table1.StartGame();
+    }
+}
+
+class Card
+{
+    private string _meaning;
+    private string _suit;
+
+    public Card(string meaning, string suit)
+    {
+        _meaning = meaning;
+        _suit = suit;
+    }
+
+    public void Show()
+    {
+        Console.WriteLine($"{_meaning} {_suit}");
+    }
+}
+
+class Deck
+{
+    private string[] _meanings = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Валет", "Дама", "Король", "Туз"];
+    private string[] _suits = ["Пики", "Крести", "Черви", "Буби"];
+
+    private Queue<Card> _cards = new Queue<Card>();
+
+    public List<Card> CreateNew()
+    {
+        List<Card> cards = new List<Card>();
+
+        for (int i = 0; i < _suits.Length; i++)
+        {
+            for (int j = 0; j < _meanings.Length; j++)
+            {
+                cards.Add(new Card(_meanings[j], _suits[i]));
+            }
+        }
+
+        return cards;
+    }
+
+    public void Intermix(List<Card> cards)
+    {
+        Random randomNumber = new Random();
+
+        for (int i = cards.Count - 1; i >= 0; i--)
+        {
+            int randomIndex = randomNumber.Next(i);
+
+            Card tempCard = cards[randomIndex];
+
+            cards[randomIndex] = cards[i];
+            _cards.Enqueue(tempCard);
+        }
+    }
+
+    public int GetCountCards()
+    {
+        return _cards.Count;
+    }
+
+    public Queue<Card> GetCards()
+    {
+        return _cards;
+    }
+
+    public void Clear()
+    {
+        _cards.Clear();
+    }
+}
+
+class Player
+{
+    private List<Card> _cards = new List<Card>();
+
+    public void TakeCards(int count, Queue<Card> cards)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            _cards.Add(cards.Dequeue());
+        }
+    }
+
+    public void ShowCards()
+    {
+        Console.WriteLine("Ваши карты: ");
+
+        foreach (Card card in _cards)
+        {
+            card.Show();
+        }
+    }
+
+    public void DeleteCards()
+    {
+        _cards.Clear();
+    }
+}
+
+class PlayTable
+{
+    private Player _player;
+
+    public PlayTable(Player player)
+    {
+        _player = player;
+    }
+
+    public void StartGame()
+    {
+        const string KeyToStop = "N";
+
+        bool isGame = true;
+
+        Deck gameDeck = new Deck();
+
+        List<Card> baseDeck = gameDeck.CreateNew();
+
+        while (isGame)
+        {
+            int countRounds = 0;
+
+            bool isRoundStart = true;
+
+            gameDeck.Intermix(baseDeck);
+
+            while (isRoundStart && gameDeck.GetCountCards() > 0)
+            {
+                Console.WriteLine($"Раунд {++countRounds} начался");
+
+                StartRound(gameDeck);
+
+                Console.WriteLine($"Чтобы продолжить брать карты нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
+
+                InputUserCommand(ref isRoundStart, KeyToStop);
+            }
+
+            _player.DeleteCards();
+            gameDeck.Clear();
+
+            Console.WriteLine("Раунд закончился");
+            Console.WriteLine($"Чтобы начать новый раунд нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
+
+            InputUserCommand(ref isGame, KeyToStop);
+        }
+    }
+
+    private void InputUserCommand(ref bool isGame , string stopKey)
+    {
+        string userInput = Console.ReadLine();
+
+        if (userInput.ToUpper() == stopKey)
+        {
+            Console.WriteLine("Спасибо за игру!");
+            isGame = false;
+        }
+        else
+        {
+            Console.WriteLine("Игра продолжается.");
+        }
+    }
+
+    private void StartRound(Deck gameDeck)
+    {
+        Console.Write($"Осталось {gameDeck.GetCountCards()} карт. Сколько карт вы хотите взять: ");
+        int.TryParse(Console.ReadLine(), out int counterCards);
+
+        if (counterCards > 0 && counterCards <= gameDeck.GetCountCards())
+        {
+            _player.TakeCards(counterCards, gameDeck.GetCards());
+            _player.ShowCards();
+        }
+        else
+        {
+            Console.WriteLine("Неверное число карт");
+        }
+    }
+}
