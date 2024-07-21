@@ -28,13 +28,13 @@ class Card
 
 class Deck
 {
-    private string[] _meanings = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Валет", "Дама", "Король", "Туз"];
-    private string[] _suits = ["Пики", "Крести", "Черви", "Буби"];
-
     private Queue<Card> _cards = new Queue<Card>();
 
     public List<Card> CreateNew()
     {
+        string[] _meanings = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Валет", "Дама", "Король", "Туз"];
+        string[] _suits = ["Пики", "Крести", "Черви", "Буби"];
+
         List<Card> cards = new List<Card>();
 
         for (int i = 0; i < _suits.Length; i++)
@@ -54,7 +54,7 @@ class Deck
 
         for (int i = cards.Count - 1; i >= 0; i--)
         {
-            int randomIndex = randomNumber.Next(i);
+            int randomIndex = randomNumber.Next(_cards.Count);
 
             Card tempCard = cards[randomIndex];
 
@@ -142,7 +142,7 @@ class PlayTable
 
                 Console.WriteLine($"Чтобы продолжить брать карты нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
 
-                InputUserCommand(ref isRoundStart, KeyToStop);
+                isRoundStart = CheckUserCommand(KeyToStop);
             }
 
             _player.DeleteCards();
@@ -151,22 +151,23 @@ class PlayTable
             Console.WriteLine("Раунд закончился");
             Console.WriteLine($"Чтобы начать новый раунд нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
 
-            InputUserCommand(ref isGame, KeyToStop);
+            isGame = CheckUserCommand(KeyToStop);
         }
     }
 
-    private void InputUserCommand(ref bool isGame , string stopKey)
+    private bool CheckUserCommand(string stopKey)
     {
         string userInput = Console.ReadLine();
 
         if (userInput.ToUpper() == stopKey)
         {
             Console.WriteLine("Спасибо за игру!");
-            isGame = false;
+            return false;
         }
         else
         {
             Console.WriteLine("Игра продолжается.");
+            return true;
         }
     }
 
