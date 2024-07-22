@@ -32,20 +32,17 @@ class Deck
 
     public Deck()
     {
-        Intermix(CreateNew());
+        Fill();
     }
 
-    public int GetCountCards()
-    {
-        return _cards.Count;
-    }
+    public int CountCards => _cards.Count;
 
     public Card GetCard()
     {
         return _cards.Dequeue();
     }
 
-    private List<Card> CreateNew()
+    private void Fill()
     {
         string[] meanings = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Валет", "Дама", "Король", "Туз"];
         string[] suits = ["Пики", "Крести", "Черви", "Буби"];
@@ -59,17 +56,12 @@ class Deck
                 cards.Add(new Card(meanings[j], suits[i]));
             }
         }
-
-        return cards;
-    }
-
-    private void Intermix(List<Card> cards)
-    {
-        Random randomNumber = new Random();
+    
+        Random random = new Random();
 
         for (int i = cards.Count - 1; i >= 0; i--)
         {
-            int randomIndex = randomNumber.Next(cards.Count);
+            int randomIndex = random.Next(cards.Count);
 
             Card tempCard = cards[randomIndex];
 
@@ -84,12 +76,9 @@ class Player
 {
     private List<Card> _cards = new List<Card>();
 
-    public void TakeCards(int count, Deck deck)
+    public void TakeCard(Card card)
     {
-        for (int i = 0; i < count; i++)
-        {
-            _cards.Add(deck.GetCard());
-        }
+        _cards.Add(card);
     }
 
     public void ShowCards()
@@ -131,7 +120,7 @@ class PlayTable
 
             bool isRoundStart = true;
 
-            while (isRoundStart && gameDeck.GetCountCards() > 0)
+            while (isRoundStart && gameDeck.CountCards > 0)
             {
                 Console.WriteLine($"Раунд {++countRounds} начался");
 
@@ -139,7 +128,7 @@ class PlayTable
 
                 Console.WriteLine($"Чтобы продолжить брать карты нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
 
-                isRoundStart = CheckExit(KeyToStop);
+                isRoundStart = Exit(KeyToStop);
             }
 
             _player.DeleteCards();
@@ -147,11 +136,11 @@ class PlayTable
             Console.WriteLine("Раунд закончился");
             Console.WriteLine($"Чтобы начать новый раунд нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
 
-            isGame = CheckExit(KeyToStop);
+            isGame = Exit(KeyToStop);
         }
     }
 
-    private bool CheckExit(string stopKey)
+    private bool Exit(string stopKey)
     {
         string userInput = Console.ReadLine();
 
@@ -169,12 +158,16 @@ class PlayTable
 
     private void StartRound(Deck gameDeck)
     {
-        Console.Write($"Осталось {gameDeck.GetCountCards()} карт. Сколько карт вы хотите взять: ");
+        Console.Write($"Осталось {gameDeck.CountCards} карт. Сколько карт вы хотите взять: ");
         int.TryParse(Console.ReadLine(), out int counterCards);
 
-        if (counterCards > 0 && counterCards <= gameDeck.GetCountCards())
+        if (counterCards > 0 && counterCards <= gameDeck.CountCards)
         {
-            _player.TakeCards(counterCards, gameDeck);
+            for (int i = 0; i < counterCards; i++)
+            {
+                _player.TakeCard(gameDeck.GetCard());
+            }
+
             _player.ShowCards();
         }
         else
