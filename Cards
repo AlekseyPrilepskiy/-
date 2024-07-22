@@ -30,7 +30,22 @@ class Deck
 {
     private Queue<Card> _cards = new Queue<Card>();
 
-    public List<Card> CreateNew()
+    public Deck()
+    {
+        Intermix(CreateNew());
+    }
+
+    public int GetCountCards()
+    {
+        return _cards.Count;
+    }
+
+    public Card GetCard()
+    {
+        return _cards.Dequeue();
+    }
+
+    private List<Card> CreateNew()
     {
         string[] meanings = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Валет", "Дама", "Король", "Туз"];
         string[] suits = ["Пики", "Крести", "Черви", "Буби"];
@@ -48,13 +63,13 @@ class Deck
         return cards;
     }
 
-    public void Intermix(List<Card> cards)
+    private void Intermix(List<Card> cards)
     {
         Random randomNumber = new Random();
 
         for (int i = cards.Count - 1; i >= 0; i--)
         {
-            int randomIndex = randomNumber.Next(_cards.Count);
+            int randomIndex = randomNumber.Next(cards.Count);
 
             Card tempCard = cards[randomIndex];
 
@@ -63,32 +78,17 @@ class Deck
         }
     }
 
-    public int GetCountCards()
-    {
-        return _cards.Count;
-    }
-
-    public Queue<Card> GetCards()
-    {
-        Queue<Card> copyCards = _cards;
-        return copyCards;
-    }
-
-    public void Clear()
-    {
-        _cards.Clear();
-    }
 }
 
 class Player
 {
     private List<Card> _cards = new List<Card>();
 
-    public void TakeCards(int count, Queue<Card> cards)
+    public void TakeCards(int count, Deck deck)
     {
         for (int i = 0; i < count; i++)
         {
-            _cards.Add(cards.Dequeue());
+            _cards.Add(deck.GetCard());
         }
     }
 
@@ -123,17 +123,13 @@ class PlayTable
 
         bool isGame = true;
 
-        Deck gameDeck = new Deck();
-
-        List<Card> baseDeck = gameDeck.CreateNew();
-
         while (isGame)
         {
+            Deck gameDeck = new Deck();
+
             int countRounds = 0;
 
             bool isRoundStart = true;
-
-            gameDeck.Intermix(baseDeck);
 
             while (isRoundStart && gameDeck.GetCountCards() > 0)
             {
@@ -147,7 +143,6 @@ class PlayTable
             }
 
             _player.DeleteCards();
-            gameDeck.Clear();
 
             Console.WriteLine("Раунд закончился");
             Console.WriteLine($"Чтобы начать новый раунд нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
@@ -179,7 +174,7 @@ class PlayTable
 
         if (counterCards > 0 && counterCards <= gameDeck.GetCountCards())
         {
-            _player.TakeCards(counterCards, gameDeck.GetCards());
+            _player.TakeCards(counterCards, gameDeck);
             _player.ShowCards();
         }
         else
