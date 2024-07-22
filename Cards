@@ -62,7 +62,6 @@ class Deck
 
     private void Shuffle(List<Card> cards)
     {
-
         Random random = new Random();
 
         for (int i = cards.Count - 1; i >= 0; i--)
@@ -129,7 +128,7 @@ class PlayTable
             {
                 Console.WriteLine($"Раунд {++countRounds} начался");
 
-                DoGame(gameDeck);
+                TakeCards(gameDeck);
 
                 Console.WriteLine($"Чтобы продолжить брать карты нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
 
@@ -161,7 +160,7 @@ class PlayTable
         }
     }
 
-    private void DoGame(Deck gameDeck)
+    private void TakeCards(Deck gameDeck)
     {
         Console.Write($"Осталось {gameDeck.CountCards} карт. Сколько карт вы хотите взять: ");
         int.TryParse(Console.ReadLine(), out int counterCards);
