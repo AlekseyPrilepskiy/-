@@ -118,17 +118,17 @@ class PlayTable
 
         while (isPlay)
         {
-            Deck gameDeck = new Deck();
+            Deck deck = new Deck();
 
             int countRounds = 0;
 
             bool isGame = true;
 
-            while (isGame && gameDeck.CountCards > 0)
+            while (isGame && deck.CountCards > 0)
             {
                 Console.WriteLine($"Раунд {++countRounds} начался");
 
-                TakeCards(gameDeck);
+                TransferCards(deck);
 
                 Console.WriteLine($"Чтобы продолжить брать карты нажмите любую клавишу. Чтобы закончить - {KeyToStop}");
 
@@ -160,16 +160,16 @@ class PlayTable
         }
     }
 
-    private void TakeCards(Deck gameDeck)
+    private void TransferCards(Deck deck)
     {
-        Console.Write($"Осталось {gameDeck.CountCards} карт. Сколько карт вы хотите взять: ");
+        Console.Write($"Осталось {deck.CountCards} карт. Сколько карт вы хотите взять: ");
         int.TryParse(Console.ReadLine(), out int counterCards);
 
-        if (counterCards > 0 && counterCards <= gameDeck.CountCards)
+        if (counterCards > 0 && counterCards <= deck.CountCards)
         {
             for (int i = 0; i < counterCards; i++)
             {
-                _player.TakeCard(gameDeck.GiveCard());
+                _player.TakeCard(deck.GiveCard());
             }
 
             _player.ShowCards();
