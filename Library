@@ -1,0 +1,203 @@
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        const string CommandAddBook = "1";
+        const string CommandDeleteBook = "2";
+        const string CommandFindBook = "3";
+        const string CommandExit = "4";
+
+        bool isLibraryOpen = true;
+
+        Library library = new Library();
+
+        Console.WriteLine("Добро пожаловать в библиотеку! Добавьте первую книгу.");
+
+        library.AddBook();
+
+        while (isLibraryOpen)
+        {
+            library.ShowAllBooks();
+            Console.WriteLine();
+
+            Console.WriteLine($"{CommandAddBook} - Добавить книгу.");
+            Console.WriteLine($"{CommandDeleteBook} - Удалить книгу.");
+            Console.WriteLine($"{CommandFindBook} - Поиск книги.");
+            Console.WriteLine($"{CommandExit} - Выход.");
+
+            Console.Write("Введите команду: ");
+            string userCommand = Console.ReadLine();
+
+            switch (userCommand)
+            {
+                case CommandAddBook:
+                    library.AddBook();
+                    break;
+
+                case CommandDeleteBook:
+                    library.DeleteBook();
+                    break;
+
+                case CommandFindBook:
+                    library.FindBook();
+                    break;
+
+                case CommandExit:
+                    isLibraryOpen = false;
+                    break;
+
+                default:
+                    Console.WriteLine("Неверная команда");
+                    break;
+            }
+
+            Console.ReadKey();
+        }
+    }
+}
+
+class Book
+{
+    public Book(string name, string author, string dateOfBirth)
+    {
+        Name = name;
+        Author = author;
+        DateOfBirth = dateOfBirth;
+    }
+
+    public string Name { get; private set; }
+    public string Author { get; private set; }
+    public string DateOfBirth { get; private set; }
+
+    public void ShowInfo()
+    {
+        Console.WriteLine($"Книга: {Name}, Автор {Author}, год {DateOfBirth}");
+    }
+}
+
+class Library
+{
+    private List<Book> _books = new List<Book>();
+
+    public void AddBook()
+    {
+        Console.Write("Введите название книги: ");
+        string name = Console.ReadLine();
+
+        Console.Write("Введите автора книги: ");
+        string author = Console.ReadLine();
+
+        Console.Write("Введите дату выхода книги: ");
+        string dateOfBirth = Console.ReadLine();
+
+        _books.Add(new Book(name, author, dateOfBirth));
+
+        Console.WriteLine("Книга добавлена");
+    }
+
+    public void ShowAllBooks()
+    {
+        int countBooks = 0;
+
+        Console.WriteLine("------------------------------------------------");
+
+        foreach (Book book in _books)
+        {
+            Console.Write($"{++countBooks}: ");
+            book.ShowInfo();
+        }
+
+        Console.WriteLine("------------------------------------------------");
+    }
+
+    public void DeleteBook()
+    {
+        Console.Write("Выберите номер книги: ");
+        int.TryParse(Console.ReadLine(), out int bookIndex);
+
+        bookIndex--;
+
+        if (bookIndex >= 0 && bookIndex <= _books.Count)
+        {
+            _books.RemoveAt(bookIndex);
+
+            Console.WriteLine("Книга удалена");
+        }
+        else
+        {
+            Console.WriteLine("Неверный индекс");
+        }
+    }
+
+    public void FindBook()
+    {
+        const string FindForName = "1";
+        const string FindForAurhor = "2";
+        const string FindForDate = "3";
+
+        int count = 0;
+
+        Console.WriteLine($"{FindForName} - поиск по имени.");
+        Console.WriteLine($"{FindForAurhor} - поиск по автору.");
+        Console.WriteLine($"{FindForDate} - поиск по дате написания.");
+
+        string userInput = Console.ReadLine();
+
+        switch (userInput)
+        {
+            case FindForName:
+                Console.Write("Введите название книги: ");
+                string name = Console.ReadLine();
+
+                foreach (Book book in _books)
+                {
+                    if (book.Name == name)
+                    {
+                        book.ShowInfo();
+                        count++;
+                    }
+                }
+
+                break;
+
+            case FindForAurhor:
+                Console.Write("Введите автора книги: ");
+                string author = Console.ReadLine();
+
+                foreach (Book book in _books)
+                {
+                    if (book.Author == author)
+                    {
+                        book.ShowInfo();
+                        count++;
+                    }
+                }
+
+                break;
+
+            case FindForDate:
+                Console.Write("Введите дату написания книги: ");
+                string dateOfBirth = Console.ReadLine();
+
+                foreach (Book book in _books)
+                {
+                    if (book.DateOfBirth == dateOfBirth)
+                    {
+                        book.ShowInfo();
+                        count++;
+                    }
+                }
+
+                break;
+
+            default:
+                Console.WriteLine("Неверная команда");
+                break;
+        }
+
+        if (count == 0)
+        {
+            Console.WriteLine("Книг не найдено");
+        }
+    }
+}
