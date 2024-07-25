@@ -17,6 +17,8 @@ internal class Program
 
         while (isLibraryOpen)
         {
+            Console.ReadKey();
+
             library.ShowAllBooks();
             Console.WriteLine();
 
@@ -50,15 +52,13 @@ internal class Program
                     Console.WriteLine("Неверная команда");
                     break;
             }
-
-            Console.ReadKey();
         }
     }
 }
 
 class Book
 {
-    public Book(string name, string author, string dateOfBirth)
+    public Book(string name, string author, int dateOfBirth)
     {
         Name = name;
         Author = author;
@@ -67,7 +67,7 @@ class Book
 
     public string Name { get; private set; }
     public string Author { get; private set; }
-    public string DateOfBirth { get; private set; }
+    public int DateOfBirth { get; private set; }
 
     public void ShowInfo()
     {
@@ -88,7 +88,7 @@ class Library
         string author = Console.ReadLine();
 
         Console.Write("Введите дату выхода книги: ");
-        string dateOfBirth = Console.ReadLine();
+        int.TryParse(Console.ReadLine(), out int dateOfBirth);
 
         _books.Add(new Book(name, author, dateOfBirth));
 
@@ -98,6 +98,7 @@ class Library
     public void ShowAllBooks()
     {
         string border = "------------------------------------------------";
+
         int countBooks = 0;
 
         Console.WriteLine(border);
@@ -132,30 +133,30 @@ class Library
 
     public void FindBook()
     {
-        const string FindForName = "1";
-        const string FindForAurhor = "2";
-        const string FindForDate = "3";
+        const string CommandFindForName = "1";
+        const string CommandFindForAurhor = "2";
+        const string CommandFindForDate = "3";
 
         int count = 0;
 
-        Console.WriteLine($"{FindForName} - поиск по имени.");
-        Console.WriteLine($"{FindForAurhor} - поиск по автору.");
-        Console.WriteLine($"{FindForDate} - поиск по дате написания.");
+        Console.WriteLine($"{CommandFindForName} - поиск по имени.");
+        Console.WriteLine($"{CommandFindForAurhor} - поиск по автору.");
+        Console.WriteLine($"{CommandFindForDate} - поиск по дате написания.");
 
         string userInput = Console.ReadLine();
 
         switch (userInput)
         {
-            case FindForName:
-                FindName(ref count);
+            case CommandFindForName:
+                FindName(out count);
                 break;
 
-            case FindForAurhor:
-                FindAuthor(ref count);
+            case CommandFindForAurhor:
+                FindAuthor(out count);
                 break;
 
-            case FindForDate:
-                FindDate(ref count);
+            case CommandFindForDate:
+                FindDate(out count);
                 break;
 
             default:
@@ -169,8 +170,10 @@ class Library
         }
     }
 
-    private void FindName(ref int count)
+    private void FindName(out int count)
     {
+        count = 0;
+
         Console.Write("Введите название книги: ");
         string name = Console.ReadLine();
 
@@ -184,8 +187,10 @@ class Library
         }
     }
 
-    private void FindAuthor(ref int count)
+    private void FindAuthor(out int count)
     {
+        count = 0;
+
         Console.Write("Введите автора книги: ");
         string author = Console.ReadLine();
 
@@ -199,10 +204,12 @@ class Library
         }
     }
 
-    private void FindDate(ref int count)
+    private void FindDate(out int count)
     {
+        count = 0;
+
         Console.Write("Введите дату издания книги: ");
-        string date = Console.ReadLine();
+        int.TryParse(Console.ReadLine(), out int date);
 
         foreach (Book book in _books)
         {
