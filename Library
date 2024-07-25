@@ -97,9 +97,10 @@ class Library
 
     public void ShowAllBooks()
     {
+        string border = "------------------------------------------------";
         int countBooks = 0;
 
-        Console.WriteLine("------------------------------------------------");
+        Console.WriteLine(border);
 
         foreach (Book book in _books)
         {
@@ -107,7 +108,7 @@ class Library
             book.ShowInfo();
         }
 
-        Console.WriteLine("------------------------------------------------");
+        Console.WriteLine(border);
     }
 
     public void DeleteBook()
@@ -117,7 +118,7 @@ class Library
 
         bookIndex--;
 
-        if (bookIndex >= 0 && bookIndex <= _books.Count)
+        if (bookIndex >= 0 && bookIndex < _books.Count)
         {
             _books.RemoveAt(bookIndex);
 
@@ -146,48 +147,15 @@ class Library
         switch (userInput)
         {
             case FindForName:
-                Console.Write("Введите название книги: ");
-                string name = Console.ReadLine();
-
-                foreach (Book book in _books)
-                {
-                    if (book.Name == name)
-                    {
-                        book.ShowInfo();
-                        count++;
-                    }
-                }
-
+                FindName(ref count);
                 break;
 
             case FindForAurhor:
-                Console.Write("Введите автора книги: ");
-                string author = Console.ReadLine();
-
-                foreach (Book book in _books)
-                {
-                    if (book.Author == author)
-                    {
-                        book.ShowInfo();
-                        count++;
-                    }
-                }
-
+                FindAuthor(ref count);
                 break;
 
             case FindForDate:
-                Console.Write("Введите дату написания книги: ");
-                string dateOfBirth = Console.ReadLine();
-
-                foreach (Book book in _books)
-                {
-                    if (book.DateOfBirth == dateOfBirth)
-                    {
-                        book.ShowInfo();
-                        count++;
-                    }
-                }
-
+                FindDate(ref count);
                 break;
 
             default:
@@ -198,6 +166,51 @@ class Library
         if (count == 0)
         {
             Console.WriteLine("Книг не найдено");
+        }
+    }
+
+    private void FindName(ref int count)
+    {
+        Console.Write("Введите название книги: ");
+        string name = Console.ReadLine();
+
+        foreach (Book book in _books)
+        {
+            if (book.Name.ToLower().Contains(name.ToLower()))
+            {
+                book.ShowInfo();
+                count++;
+            }
+        }
+    }
+
+    private void FindAuthor(ref int count)
+    {
+        Console.Write("Введите автора книги: ");
+        string author = Console.ReadLine();
+
+        foreach (Book book in _books)
+        {
+            if (book.Author.ToLower() == author.ToLower())
+            {
+                book.ShowInfo();
+                count++;
+            }
+        }
+    }
+
+    private void FindDate(ref int count)
+    {
+        Console.Write("Введите дату издания книги: ");
+        string date = Console.ReadLine();
+
+        foreach (Book book in _books)
+        {
+            if (book.DateOfBirth == date)
+            {
+                book.ShowInfo();
+                count++;
+            }
         }
     }
 }
