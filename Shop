@@ -1,0 +1,174 @@
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        const string CommandToExit = "N";
+
+        int sellerMoney = 0;
+        int buyerMoney = 70;
+
+        bool isOpen = true;
+
+        Seller seller = new Seller(sellerMoney);
+        Buyer buyer = new Buyer(buyerMoney);
+
+        while (isOpen)
+        {
+            buyer.ShowInfo();
+
+            seller.ShowInfo();
+
+            Console.Write("\nНапишите название продукта, который вы хотите взять: ");
+            string name = Console.ReadLine();
+
+            if (seller.SellProduct(name, buyer, out Product product))
+            {
+                buyer.BuyProduct(product);
+            }
+
+            Console.WriteLine($"Нажмите любую клавишу для продолжения. Чтобы выйти нажмите {CommandToExit}.");
+
+            if (Console.ReadLine().ToLower() == CommandToExit.ToLower())
+            {
+                Console.WriteLine("Спасибо, что зашли в наш магазин.");
+
+                buyer.ShowInfo();
+
+                isOpen = false;
+
+                Console.ReadLine();
+            }
+
+            Console.Clear();
+        }
+    }
+}
+
+class Product
+{
+    public Product(string name, int price)
+    {
+        Name = name;
+        Price = price;
+    }
+
+    public string Name { get; private set; }
+    public int Price { get; private set; }
+}
+
+class Human
+{
+    public Human(int money)
+    {
+        Money = money;
+        Products = new List<Product>();
+    }
+
+    public List<Product> Products { get; private set; }
+    public int Money { get; private set; }
+
+    public virtual void ShowInfo()
+    {
+        Console.WriteLine($"В кошельке {Money} денег.");
+
+        Console.WriteLine("Корзина:");
+
+        foreach (Product product in Products)
+        {
+            Console.WriteLine(product.Name);
+        }
+
+        Console.WriteLine();
+    }
+
+    public void AddMoney(int price)
+    {
+        Money += price;
+    }
+
+    public void SpendMoney(int price)
+    {
+        Money -= price;
+    }
+}
+
+class Buyer : Human
+{
+    public Buyer(int money) : base(money) { }
+
+    public void BuyProduct(Product product)
+    {
+        Products.Add(product);
+        SpendMoney(product.Price);
+
+        Console.WriteLine("Товар добавлен в корзину.");
+    }
+}
+
+class Seller : Human
+{
+    public Seller(int money) : base(money)
+    {
+        FillWarehouse();
+    }
+
+    public override void ShowInfo()
+    {
+        Console.WriteLine($"В кассе {Money} денег.\n");
+
+        Console.WriteLine("Список продуктов продавца:");
+
+        foreach (Product product in Products)
+        {
+            Console.WriteLine($"{product.Name}. цена: {product.Price}");
+        }
+    }
+
+    public bool SellProduct(string name, Buyer buyer, out Product desiredProduct)
+    {
+        foreach (Product product in Products)
+        {
+            if (product.Name == name)
+            {
+                if (buyer.Money >= product.Price)
+                {
+                    AddMoney(product.Price);
+                    desiredProduct = product;
+                    Products.Remove(product);
+
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Недостаточно средств.");
+
+                    desiredProduct = null;
+                    return false;
+                }
+            }
+        }
+
+        Console.WriteLine("Данный продукт не найден.");
+
+        desiredProduct = null;
+        return false;
+    }
+
+    private void FillWarehouse()
+    {
+        Products.Add(new Product("Помидор", 5));
+        Products.Add(new Product("Огурец", 4));
+        Products.Add(new Product("Чипсы", 90));
+        Products.Add(new Product("Сок", 80));
+        Products.Add(new Product("Яблоко", 7));
+        Products.Add(new Product("Доширак", 55));
+        Products.Add(new Product("Колбаса", 255));
+        Products.Add(new Product("Сосиски", 210));
+        Products.Add(new Product("Сыр", 175));
+        Products.Add(new Product("Масло", 160));
+        Products.Add(new Product("Йогурт", 65));
+        Products.Add(new Product("Молоко", 75));
+        Products.Add(new Product("Яйца", 115));
+        Products.Add(new Product("Курица", 355));
+    }
+}
