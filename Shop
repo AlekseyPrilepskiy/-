@@ -5,7 +5,7 @@ internal class Program
         const string CommandToExit = "N";
 
         int sellerMoney = 0;
-        int buyerMoney = 70;
+        int buyerMoney = 700;
 
         bool isOpen = true;
 
@@ -21,9 +21,21 @@ internal class Program
             Console.Write("\nНапишите название продукта, который вы хотите взять: ");
             string name = Console.ReadLine();
 
-            if (seller.SellProduct(name, buyer, out Product product))
+            if (seller.FindProduct(name, out Product product))
             {
-                buyer.BuyProduct(product);
+                if (buyer.ShowMoney() >= product.Price)
+                {
+                    seller.SellProduct(product);
+                    buyer.BuyProduct(product);
+                }
+                else
+                {
+                    Console.WriteLine("Недостаточно средств.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Продукт не найден.");
             }
 
             Console.WriteLine($"Нажмите любую клавишу для продолжения. Чтобы выйти нажмите {CommandToExit}.");
@@ -58,37 +70,27 @@ class Product
 
 class Human
 {
+    protected List<Product> _products;
+    protected int _money;
+
     public Human(int money)
     {
-        Money = money;
-        Products = new List<Product>();
+        _products = new List<Product>();
+        _money = money;
     }
-
-    public List<Product> Products { get; private set; }
-    public int Money { get; private set; }
 
     public virtual void ShowInfo()
     {
-        Console.WriteLine($"В кошельке {Money} денег.");
+        Console.WriteLine($"В кошельке {_money} денег.");
 
         Console.WriteLine("Корзина:");
 
-        foreach (Product product in Products)
+        foreach (Product product in _products)
         {
             Console.WriteLine(product.Name);
         }
 
         Console.WriteLine();
-    }
-
-    public void AddMoney(int price)
-    {
-        Money += price;
-    }
-
-    public void SpendMoney(int price)
-    {
-        Money -= price;
     }
 }
 
@@ -98,10 +100,20 @@ class Buyer : Human
 
     public void BuyProduct(Product product)
     {
-        Products.Add(product);
+        _products.Add(product);
         SpendMoney(product.Price);
 
         Console.WriteLine("Товар добавлен в корзину.");
+    }
+
+    public int ShowMoney()
+    {
+        return _money;
+    }
+
+    private void SpendMoney(int price)
+    {
+        _money -= price;
     }
 }
 
@@ -114,61 +126,57 @@ class Seller : Human
 
     public override void ShowInfo()
     {
-        Console.WriteLine($"В кассе {Money} денег.\n");
+        Console.WriteLine($"В кассе {_money} денег.\n");
 
         Console.WriteLine("Список продуктов продавца:");
 
-        foreach (Product product in Products)
+        foreach (Product product in _products)
         {
             Console.WriteLine($"{product.Name}. цена: {product.Price}");
         }
     }
 
-    public bool SellProduct(string name, Buyer buyer, out Product desiredProduct)
+    public bool FindProduct(string name, out Product desiredProduct)
     {
-        foreach (Product product in Products)
+        foreach (Product product in _products)
         {
-            if (product.Name == name)
+            if (product.Name.ToLower() == name.ToLower())
             {
-                if (buyer.Money >= product.Price)
-                {
-                    AddMoney(product.Price);
-                    desiredProduct = product;
-                    Products.Remove(product);
-
-                    return true;
-                }
-                else
-                {
-                    Console.WriteLine("Недостаточно средств.");
-
-                    desiredProduct = null;
-                    return false;
-                }
+                desiredProduct = product;
+                return true;
             }
         }
-
-        Console.WriteLine("Данный продукт не найден.");
 
         desiredProduct = null;
         return false;
     }
 
+    public void SellProduct(Product product)
+    {
+        AddMoney(product.Price);
+        _products.Remove(product);
+    }
+
+    private void AddMoney(int price)
+    {
+        _money += price;
+    }
+
     private void FillWarehouse()
     {
-        Products.Add(new Product("Помидор", 5));
-        Products.Add(new Product("Огурец", 4));
-        Products.Add(new Product("Чипсы", 90));
-        Products.Add(new Product("Сок", 80));
-        Products.Add(new Product("Яблоко", 7));
-        Products.Add(new Product("Доширак", 55));
-        Products.Add(new Product("Колбаса", 255));
-        Products.Add(new Product("Сосиски", 210));
-        Products.Add(new Product("Сыр", 175));
-        Products.Add(new Product("Масло", 160));
-        Products.Add(new Product("Йогурт", 65));
-        Products.Add(new Product("Молоко", 75));
-        Products.Add(new Product("Яйца", 115));
-        Products.Add(new Product("Курица", 355));
+        _products.Add(new Product("Помидор", 5));
+        _products.Add(new Product("Огурец", 4));
+        _products.Add(new Product("Чипсы", 90));
+        _products.Add(new Product("Сок", 80));
+        _products.Add(new Product("Яблоко", 7));
+        _products.Add(new Product("Доширак", 55));
+        _products.Add(new Product("Колбаса", 255));
+        _products.Add(new Product("Сосиски", 210));
+        _products.Add(new Product("Сыр", 175));
+        _products.Add(new Product("Масло", 160));
+        _products.Add(new Product("Йогурт", 65));
+        _products.Add(new Product("Молоко", 75));
+        _products.Add(new Product("Яйца", 115));
+        _products.Add(new Product("Курица", 355));
     }
 }
