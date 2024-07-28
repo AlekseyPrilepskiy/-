@@ -23,14 +23,9 @@ internal class Program
 
             if (seller.FindProduct(name, out Product product))
             {
-                if (buyer.ShowMoney() >= product.Price)
+                if (buyer.BuyProduct(product))
                 {
                     seller.SellProduct(product);
-                    buyer.BuyProduct(product);
-                }
-                else
-                {
-                    Console.WriteLine("Недостаточно средств.");
                 }
             }
             else
@@ -70,22 +65,22 @@ class Product
 
 class Human
 {
-    protected List<Product> _products;
-    protected int _money;
+    protected List<Product> Products;
+    protected int Money;
 
     public Human(int money)
     {
-        _products = new List<Product>();
-        _money = money;
+        Products = new List<Product>();
+        Money = money;
     }
 
     public virtual void ShowInfo()
     {
-        Console.WriteLine($"В кошельке {_money} денег.");
+        Console.WriteLine($"В кошельке {Money} денег.");
 
         Console.WriteLine("Корзина:");
 
-        foreach (Product product in _products)
+        foreach (Product product in Products)
         {
             Console.WriteLine(product.Name);
         }
@@ -98,22 +93,29 @@ class Buyer : Human
 {
     public Buyer(int money) : base(money) { }
 
-    public void BuyProduct(Product product)
+    public bool BuyProduct(Product product)
     {
-        _products.Add(product);
-        SpendMoney(product.Price);
+        if (Money >= product.Price)
+        {
+            Products.Add(product);
+            SpendMoney(product.Price);
 
-        Console.WriteLine("Товар добавлен в корзину.");
-    }
+            Console.WriteLine("Товар добавлен в корзину.");
 
-    public int ShowMoney()
-    {
-        return _money;
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("Недостаточно средств.");
+
+            return false;
+        }
+
     }
 
     private void SpendMoney(int price)
     {
-        _money -= price;
+        Money -= price;
     }
 }
 
@@ -126,11 +128,11 @@ class Seller : Human
 
     public override void ShowInfo()
     {
-        Console.WriteLine($"В кассе {_money} денег.\n");
+        Console.WriteLine($"В кассе {Money} денег.\n");
 
         Console.WriteLine("Список продуктов продавца:");
 
-        foreach (Product product in _products)
+        foreach (Product product in Products)
         {
             Console.WriteLine($"{product.Name}. цена: {product.Price}");
         }
@@ -138,7 +140,7 @@ class Seller : Human
 
     public bool FindProduct(string name, out Product desiredProduct)
     {
-        foreach (Product product in _products)
+        foreach (Product product in Products)
         {
             if (product.Name.ToLower() == name.ToLower())
             {
@@ -154,29 +156,29 @@ class Seller : Human
     public void SellProduct(Product product)
     {
         AddMoney(product.Price);
-        _products.Remove(product);
+        Products.Remove(product);
     }
 
     private void AddMoney(int price)
     {
-        _money += price;
+        Money += price;
     }
 
     private void FillWarehouse()
     {
-        _products.Add(new Product("Помидор", 5));
-        _products.Add(new Product("Огурец", 4));
-        _products.Add(new Product("Чипсы", 90));
-        _products.Add(new Product("Сок", 80));
-        _products.Add(new Product("Яблоко", 7));
-        _products.Add(new Product("Доширак", 55));
-        _products.Add(new Product("Колбаса", 255));
-        _products.Add(new Product("Сосиски", 210));
-        _products.Add(new Product("Сыр", 175));
-        _products.Add(new Product("Масло", 160));
-        _products.Add(new Product("Йогурт", 65));
-        _products.Add(new Product("Молоко", 75));
-        _products.Add(new Product("Яйца", 115));
-        _products.Add(new Product("Курица", 355));
+        Products.Add(new Product("Помидор", 5));
+        Products.Add(new Product("Огурец", 4));
+        Products.Add(new Product("Чипсы", 90));
+        Products.Add(new Product("Сок", 80));
+        Products.Add(new Product("Яблоко", 7));
+        Products.Add(new Product("Доширак", 55));
+        Products.Add(new Product("Колбаса", 255));
+        Products.Add(new Product("Сосиски", 210));
+        Products.Add(new Product("Сыр", 175));
+        Products.Add(new Product("Масло", 160));
+        Products.Add(new Product("Йогурт", 65));
+        Products.Add(new Product("Молоко", 75));
+        Products.Add(new Product("Яйца", 115));
+        Products.Add(new Product("Курица", 355));
     }
 }
