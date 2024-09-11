@@ -18,11 +18,11 @@ internal class Program
 
             switch (userInput)
             {
-                case 1:
+                case CommandCreateTrain:
                     dispatcher.CreateTrain();
                     break;
 
-                case 2:
+                case CommandExit:
                     isWork = false;
                     break;
 
@@ -40,7 +40,7 @@ internal class Program
 
 class Dispatcher
 {
-    List<Train> trains;
+    private List<Train> trains;
 
     public Dispatcher()
     {
@@ -49,6 +49,8 @@ class Dispatcher
 
     public void CreateTrain()
     {
+        int minimalPeopleCount = 200;
+        int maximalPeopleCount = 750;
         Random random = new Random();
 
         Console.Write("Введите место отправления поезда: ");
@@ -59,7 +61,7 @@ class Dispatcher
 
         string road = $"{startPlace} - {endPlace}";
 
-        int passengersCount = random.Next(200, 750);
+        int passengersCount = random.Next(minimalPeopleCount, maximalPeopleCount);
 
         Console.WriteLine($"Куплено билетов: {passengersCount}");
 
@@ -122,17 +124,17 @@ class Train
             Van van = new Van();
             _vans.Add(van);
 
-            armoredSeats -= van._placesCount;
+            armoredSeats -= van.PlacesCount;
         }
     }
 }
 
 class Van
 {
-    public int _placesCount { get; private set; }
+    public int PlacesCount { get; private set; }
 
     public Van()
     {
-        _placesCount = 32;
+        PlacesCount = 32;
     }
 }
