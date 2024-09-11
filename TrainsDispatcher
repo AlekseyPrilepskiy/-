@@ -1,0 +1,138 @@
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        const int CommandCreateTrain = 1;
+        const int CommandExit = 2;
+
+        bool isWork = true;
+
+        Dispatcher dispatcher = new Dispatcher();
+
+        while (isWork)
+        {
+            Console.WriteLine($"{CommandCreateTrain} - Создать поезд.");
+            Console.WriteLine($"{CommandExit} - Завершение работы.");
+
+            int.TryParse(Console.ReadLine(), out int userInput);
+
+            switch (userInput)
+            {
+                case 1:
+                    dispatcher.CreateTrain();
+                    break;
+
+                case 2:
+                    isWork = false;
+                    break;
+
+                default:
+                    Console.WriteLine("Неверная комманда.");
+                    break;
+            }
+
+            Console.ReadKey();
+
+            dispatcher.ShowInfo();
+        }
+    }
+}
+
+class Dispatcher
+{
+    List<Train> trains;
+
+    public Dispatcher()
+    {
+        trains = new List<Train>();
+    }
+
+    public void CreateTrain()
+    {
+        Random random = new Random();
+
+        Console.Write("Введите место отправления поезда: ");
+        string startPlace = Console.ReadLine();
+
+        Console.Write("Введите место прибытия поезда: ");
+        string endPlace = Console.ReadLine();
+
+        string road = $"{startPlace} - {endPlace}";
+
+        int passengersCount = random.Next(200, 750);
+
+        Console.WriteLine($"Куплено билетов: {passengersCount}");
+
+        Console.ReadKey();
+
+        Train train = new Train(road, passengersCount);
+        trains.Add(train);
+
+        Console.WriteLine("Поезд создан.");
+    }
+
+    public void ShowInfo()
+    {
+        int trainsNumber = 1;
+
+        foreach (Train train in trains)
+        {
+            ConsoleColor baseColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            Console.WriteLine($"Поезд #{trainsNumber}");
+
+            Console.ForegroundColor = baseColor;
+
+            train.ShowInfo();
+
+            trainsNumber++;
+        }
+    }
+}
+
+class Train
+{
+    private List<Van> _vans;
+    private string _road;
+    private int _passengersCount;
+
+    public Train(string road, int passengersCount)
+    {
+        _vans = new List<Van>();
+        _road = road;
+        _passengersCount = passengersCount;
+
+        TakePlaces();
+    }
+
+    public void ShowInfo()
+    {
+        Console.WriteLine($"Число вагонов: {_vans.Count}");
+        Console.WriteLine($"Количество пассажиров: {_passengersCount}");
+        Console.WriteLine($"Маршрут: {_road}");
+    }
+
+    private void TakePlaces()
+    {
+        int armoredSeats = _passengersCount;
+
+        while (armoredSeats > 0)
+        {
+            Van van = new Van();
+            _vans.Add(van);
+
+            armoredSeats -= van._placesCount;
+        }
+    }
+}
+
+class Van
+{
+    public int _placesCount { get; private set; }
+
+    public Van()
+    {
+        _placesCount = 32;
+    }
+}
