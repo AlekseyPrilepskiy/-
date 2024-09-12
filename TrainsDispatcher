@@ -131,10 +131,10 @@ class Train
 
 class Van
 {
-    public int PlacesCount { get; private set; }
-
     public Van()
     {
         PlacesCount = 32;
     }
+
+    public int PlacesCount { get; private set; }
 }
