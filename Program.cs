@@ -349,14 +349,14 @@ namespace ConsoleApp2
             private int _fireballManacost = 33;
             private int _fireballDamage = 30;
 
+            public int Mana { get; private set; }
+
             public Spellcaster()
             {
                 Health = 50;
                 Damage = 4;
                 Mana = 100;
             }
-
-            public int Mana { get; private set; }
 
             public override int DoDamage()
             {
