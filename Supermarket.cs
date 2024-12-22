@@ -511,7 +511,7 @@
 
             foreach (Product product in unsortedProducts)
             {
-                if (!products.ContainsKey(product.Name))
+                if (products.ContainsKey(product.Name) == false)
                 {
                     products.Add(product.Name, product.Price);
                 }
