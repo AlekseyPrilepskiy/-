@@ -100,7 +100,10 @@ namespace ConsoleApp3
                     randomFighter2 = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
                 }
 
-                enemySoldiers[randomFighter2].TakeDamage(Damage);
+                if (enemySoldiers.Count > 1)
+                {
+                    enemySoldiers[randomFighter2].TakeDamage(Damage);
+                }
 
             }
         }
