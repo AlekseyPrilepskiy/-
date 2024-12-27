@@ -70,7 +70,7 @@ namespace ConsoleApp3
             {
                 int randomFighterIndex = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
 
-                enemySoldiers[randomFighterIndex].TakeDamage(Damage);
+                enemySoldiers[randomFighterIndex].TakeDamage(_critDamage);
             }
         }
     }
