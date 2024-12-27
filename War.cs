@@ -104,7 +104,6 @@ namespace ConsoleApp3
                 {
                     enemySoldiers[randomFighter2].TakeDamage(Damage);
                 }
-
             }
         }
     }
