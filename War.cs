@@ -1,6 +1,3 @@
-﻿using System.Net.Sockets;
-using System.Runtime.CompilerServices;
-
 namespace ConsoleApp3
 {
     internal class Program
@@ -43,9 +40,9 @@ namespace ConsoleApp3
         {
             if (enemySoldiers.Count > 0)
             {
-                int randomFighter = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
+                int randomFighterIndex = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
 
-                enemySoldiers[randomFighter].TakeDamage(Damage);
+                enemySoldiers[randomFighterIndex].TakeDamage(Damage);
             }
         }
 
@@ -71,9 +68,9 @@ namespace ConsoleApp3
         {
             if (enemySoldiers.Count > 0)
             {
-                int randomFighter = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
+                int randomFighterIndex = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
 
-                enemySoldiers[randomFighter].TakeDamage(Damage);
+                enemySoldiers[randomFighterIndex].TakeDamage(Damage);
             }
         }
     }
@@ -90,20 +87,21 @@ namespace ConsoleApp3
         {
             if (enemySoldiers.Count > 0)
             {
-                int randomFighter = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
-                int randomFighter2 = randomFighter;
+                int randomFighterIndex = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
+                int randomFighter2Index = randomFighterIndex;
 
-                enemySoldiers[randomFighter].TakeDamage(Damage);
+                enemySoldiers[randomFighterIndex].TakeDamage(Damage);
 
-                while (randomFighter == randomFighter2 && enemySoldiers.Count > 1)
+                while (randomFighterIndex == randomFighter2Index && enemySoldiers.Count > 1)
                 {
-                    randomFighter2 = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
+                    randomFighter2Index = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
                 }
 
                 if (enemySoldiers.Count > 1)
                 {
-                    enemySoldiers[randomFighter2].TakeDamage(Damage);
+                    enemySoldiers[randomFighter2Index].TakeDamage(Damage);
                 }
+
             }
         }
     }
@@ -120,17 +118,17 @@ namespace ConsoleApp3
         {
             if (enemySoldiers.Count > 0)
             {
-                int randomFighter = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
+                int randomFighterIndex = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
 
-                enemySoldiers[randomFighter].TakeDamage(Damage);
+                enemySoldiers[randomFighterIndex].TakeDamage(Damage);
 
-                randomFighter = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
+                randomFighterIndex = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
 
-                if (enemySoldiers[randomFighter].Health > 0)
+                if (enemySoldiers[randomFighterIndex].Health > 0)
                 {
-                    randomFighter = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
+                    randomFighterIndex = UserUtils.GenerateRandomNumber(0, enemySoldiers.Count);
 
-                    enemySoldiers[randomFighter].TakeDamage(Damage);
+                    enemySoldiers[randomFighterIndex].TakeDamage(Damage);
                 }
                 else
                 {
@@ -150,11 +148,9 @@ namespace ConsoleApp3
             {
                 new Soldier(), new Sergeant(), new Marine(), new Commando()
             };
-
-            SoldiersCount = _soldiers.Count;
         }
 
-        public int SoldiersCount { get; private set; }
+        public int SoldiersCount => _soldiers.Count;
 
         public void Fight(Squad enemySquad)
         {
@@ -169,7 +165,6 @@ namespace ConsoleApp3
         public void TrackHealth()
         {
             _soldiers.RemoveAll(soldier => soldier.Health == 0);
-            SoldiersCount = _soldiers.Count;
         }
 
         public void ShowInfo()
