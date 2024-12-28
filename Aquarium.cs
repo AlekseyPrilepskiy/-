@@ -16,9 +16,7 @@
 
             while (isAquariumWork)
             {
-                days++;
-
-                Console.WriteLine($"{days} дней работы аквариума.\n");
+                Console.WriteLine($"{++days} дней работы аквариума.\n");
                 aquarium.ShowInfo();
 
                 Console.WriteLine("\nСписок команд:");
