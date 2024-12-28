@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp4
+namespace ConsoleApp4
 {
     internal class Program
     {
@@ -64,33 +64,29 @@
     {
         private int _minimalAge;
         private int _maximalAge;
-        private string _statusAlive;
-        private string _statusDead;
 
         public Fish()
         {
-            _statusAlive = "Живая";
-            _statusDead = "Мертвая";
+            _isAlive = true;
             _minimalAge = 1;
             _maximalAge = 10;
             Age = UserUtils.GenerateRandomNumber(_minimalAge, _maximalAge);
-            Condition = _statusAlive;
         }
 
         public int Age { get; private set; }
-        public string Condition { get; private set; }
+        public bool _isAlive { get; private set; }
 
         public void TrackHealth()
         {
             if (Age >= _maximalAge)
             {
-                Condition = _statusDead;
+                _isAlive = false;
             }
         }
 
         public void GrowUp()
         {
-            if (Condition == _statusAlive)
+            if (_isAlive)
             {
                 Age++;
             }
@@ -153,9 +149,22 @@
 
         public void ShowInfo()
         {
+            string status;
+            string statusAlive = "Живая";
+            string statusDead = "Мертвая";
+
             for (int i = 0; i < _fishes.Count; i++)
             {
-                Console.WriteLine($"{i + 1} - Возраст рыбы: {_fishes[i].Age}. Состояние: {_fishes[i].Condition}.");
+                if (_fishes[i]._isAlive)
+                {
+                    status = statusAlive;
+                }
+                else
+                {
+                    status = statusDead;
+                }
+
+                Console.WriteLine($"{i + 1} - Возраст рыбы: {_fishes[i].Age}. Состояние: {status}.");
             }
         }
     }
