@@ -74,7 +74,7 @@ namespace ConsoleApp4
         }
 
         public int Age { get; private set; }
-        public bool _isAlive { get; private set; }
+        public bool IsAlive { get; private set; }
 
         public void TrackHealth()
         {
