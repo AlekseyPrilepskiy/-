@@ -10,7 +10,7 @@ namespace ConsoleApp32
             };
 
             Zoo zoo = new Zoo(animals);
-            zoo.StartTour();
+            zoo.TakeTour();
         }
     }
 
@@ -20,10 +20,10 @@ namespace ConsoleApp32
 
         public Zoo(List<Animal> animals)
         {
-            FillAviaries(animals);
+            BuildAviaries(animals);
         }
 
-        public void StartTour()
+        public void TakeTour()
         {
             const int CommandToExit = 8;
 
@@ -62,7 +62,7 @@ namespace ConsoleApp32
             }
         }
 
-        private void FillAviaries(List<Animal> animals)
+        private void BuildAviaries(List<Animal> animals)
         {
             int minimalAviariesCount = 4;
             int maximalAviariesCount = 6;
@@ -83,7 +83,7 @@ namespace ConsoleApp32
 
         public Aviary(Animal animal)
         {
-            AddAnimals(animal);
+            PopulateAnimals(animal);
         }
 
         public void ShowInfo()
@@ -100,7 +100,7 @@ namespace ConsoleApp32
             _animals.First().MakeSound();
         }
 
-        private void AddAnimals(Animal animal)
+        private void PopulateAnimals(Animal animal)
         {
             int minimalCount = 1;
             int maximalCount = 7;
@@ -110,36 +110,37 @@ namespace ConsoleApp32
 
             for (int i = 0; i < animalsCount; i++)
             {
-                _animals.Add(animal.Recreate());
+                _animals.Add(animal.Clone());
             }
         }
     }
 
     abstract class Animal
     {
-        protected string _name;
-        protected string _gender;
+        protected string Name;
+        protected string Gender;
 
         public Animal()
         {
-            _gender = SetGender();
+            Gender = GenerateGender();
         }
 
         public abstract void MakeSound();
 
-        public abstract Animal Recreate();
+        public abstract Animal Clone();
 
         public virtual void ShowInfo()
         {
-            Console.WriteLine($"Вид: {_name}. Пол - {_gender}");
+            Console.WriteLine($"Вид: {Name}. Пол - {Gender}");
         }
 
-        private string SetGender()
+        private string GenerateGender()
         {
             string boyGender = "Самец";
             string girlGender = "Самка";
+            List<string> genders = new List<string>() { boyGender, girlGender };
 
-            return UserUtils.GenerateRandomNumber(0, 1) == 1 ? boyGender : girlGender;
+            return UserUtils.GenerateRandomNumber(0, genders.Count - 1) == (genders.Count - 1) ? boyGender : girlGender;
         }
     }
 
@@ -147,15 +148,15 @@ namespace ConsoleApp32
     {
         public Wolf()
         {
-            _name = "Волк";
+            Name = "Волк";
         }
 
         public override void MakeSound()
         {
-            Console.WriteLine($"{_name} воет.");
+            Console.WriteLine($"{Name} воет.");
         }
 
-        public override Animal Recreate()
+        public override Animal Clone()
         {
             return new Wolf();
         }
@@ -165,15 +166,15 @@ namespace ConsoleApp32
     {
         public Bear()
         {
-            _name = "Медведь";
+            Name = "Медведь";
         }
 
         public override void MakeSound()
         {
-            Console.WriteLine($"{_name} устало смотрит и молчит.");
+            Console.WriteLine($"{Name} устало смотрит и молчит.");
         }
 
-        public override Animal Recreate()
+        public override Animal Clone()
         {
             return new Bear();
         }
@@ -183,15 +184,15 @@ namespace ConsoleApp32
     {
         public Lion()
         {
-            _name = "Лев";
+            Name = "Лев";
         }
 
         public override void MakeSound()
         {
-            Console.WriteLine($"{_name} издает громкий рык.");
+            Console.WriteLine($"{Name} издает громкий рык.");
         }
 
-        public override Animal Recreate()
+        public override Animal Clone()
         {
             return new Lion();
         }
@@ -201,15 +202,15 @@ namespace ConsoleApp32
     {
         public Eagle()
         {
-            _name = "Орёл";
+            Name = "Орёл";
         }
 
         public override void MakeSound()
         {
-            Console.WriteLine($"{_name} издаёт клёкот.");
+            Console.WriteLine($"{Name} издаёт клёкот.");
         }
 
-        public override Animal Recreate()
+        public override Animal Clone()
         {
             return new Eagle();
         }
@@ -219,15 +220,15 @@ namespace ConsoleApp32
     {
         public WildCat()
         {
-            _name = "Рысь";
+            Name = "Рысь";
         }
 
         public override void MakeSound()
         {
-            Console.WriteLine($"{_name}, наевшись обедом, мурчит.");
+            Console.WriteLine($"{Name}, наевшись обедом, мурчит.");
         }
 
-        public override Animal Recreate()
+        public override Animal Clone()
         {
             return new WildCat();
         }
@@ -237,15 +238,15 @@ namespace ConsoleApp32
     {
         public Snake()
         {
-            _name = "Змея";
+            Name = "Змея";
         }
 
         public override void MakeSound()
         {
-            Console.WriteLine($"{_name} шипит.");
+            Console.WriteLine($"{Name} шипит.");
         }
 
-        public override Animal Recreate()
+        public override Animal Clone()
         {
             return new Snake();
         }
