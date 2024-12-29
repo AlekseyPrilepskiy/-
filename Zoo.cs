@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp32
+namespace ConsoleApp32
 {
     internal class Program
     {
@@ -110,7 +110,7 @@
 
             for (int i = 0; i < animalsCount; i++)
             {
-                _animals.Add(animal.Clone());
+                _animals.Add(animal.Recreate());
             }
         }
     }
@@ -127,7 +127,7 @@
 
         public abstract void MakeSound();
 
-        public abstract Animal Clone();
+        public abstract Animal Recreate();
 
         public virtual void ShowInfo()
         {
@@ -155,7 +155,7 @@
             Console.WriteLine($"{_name} воет.");
         }
 
-        public override Animal Clone()
+        public override Animal Recreate()
         {
             return new Wolf();
         }
@@ -173,7 +173,7 @@
             Console.WriteLine($"{_name} устало смотрит и молчит.");
         }
 
-        public override Animal Clone()
+        public override Animal Recreate()
         {
             return new Bear();
         }
@@ -191,7 +191,7 @@
             Console.WriteLine($"{_name} издает громкий рык.");
         }
 
-        public override Animal Clone()
+        public override Animal Recreate()
         {
             return new Lion();
         }
@@ -209,7 +209,7 @@
             Console.WriteLine($"{_name} издаёт клёкот.");
         }
 
-        public override Animal Clone()
+        public override Animal Recreate()
         {
             return new Eagle();
         }
@@ -227,7 +227,7 @@
             Console.WriteLine($"{_name}, наевшись обедом, мурчит.");
         }
 
-        public override Animal Clone()
+        public override Animal Recreate()
         {
             return new WildCat();
         }
@@ -245,7 +245,7 @@
             Console.WriteLine($"{_name} шипит.");
         }
 
-        public override Animal Clone()
+        public override Animal Recreate()
         {
             return new Snake();
         }
