@@ -1,27 +1,20 @@
-namespace ConsoleApp32
+namespace ConsoleApp6
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            List<Animal> animals = new List<Animal>
-            {
-                new Wolf(), new Bear(), new Lion(), new Eagle(), new WildCat(), new Snake()
-            };
-
-            Zoo zoo = new Zoo(animals);
+            Zoo zoo = new Zoo();
             zoo.TakeTour();
         }
     }
 
     class Zoo
     {
-        private List<Aviary> _aviaries = new List<Aviary>();
-
-        public Zoo(List<Animal> animals)
+        private List<Aviary> _aviaries = new List<Aviary>
         {
-            BuildAviaries(animals);
-        }
+            new Aviary(), new Aviary(), new Aviary(), new Aviary()
+        };
 
         public void TakeTour()
         {
@@ -61,34 +54,30 @@ namespace ConsoleApp32
                 }
             }
         }
-
-        private void BuildAviaries(List<Animal> animals)
-        {
-            int minimalAviariesCount = 4;
-            int maximalAviariesCount = 6;
-            int aviariesCount = UserUtils.GenerateRandomNumber(minimalAviariesCount, maximalAviariesCount);
-
-            for (int i = 0; i < aviariesCount; i++)
-            {
-                Animal animal = animals[UserUtils.GenerateRandomNumber(0, animals.Count - 1)];
-
-                _aviaries.Add(new Aviary(animal));
-            }
-        }
     }
 
     class Aviary
     {
+        private Family _animalsFamily = new Family();
+
+        public void ShowInfo()
+        {
+            _animalsFamily.ShowInfo();
+        }
+    }
+
+    class Family
+    {
         private List<Animal> _animals = new List<Animal>();
 
-        public Aviary(Animal animal)
+        public Family()
         {
-            PopulateAnimals(animal);
+            GenerateFamily();
         }
 
         public void ShowInfo()
         {
-            Console.WriteLine($"В вольере {_animals.Count} животных.\n");
+            Console.WriteLine($"Всего {_animals.Count} животных.\n");
 
             for (int i = 0; i < _animals.Count; i++)
             {
@@ -96,19 +85,19 @@ namespace ConsoleApp32
                 _animals[i].ShowInfo();
             }
 
-            Console.WriteLine("\nПеред вами один из жителей вольера.");
+            Console.WriteLine("\nПрямо перед вами находится один из представителей.");
             _animals.First().MakeSound();
         }
 
-        private void PopulateAnimals(Animal animal)
+        private void GenerateFamily()
         {
-            int minimalCount = 1;
-            int maximalCount = 7;
-            int animalsCount;
+            int minimalCount = 2;
+            int maximalCount = 8;
+            int animalsCount = UserUtils.GenerateRandomNumber(minimalCount, maximalCount);
 
-            animalsCount = UserUtils.GenerateRandomNumber(minimalCount, maximalCount);
+            Animal animal = AnimalsBank.GenerateAnimal();
 
-            for (int i = 0; i < animalsCount; i++)
+            for (int i = 0 ; i < animalsCount; i++)
             {
                 _animals.Add(animal.Clone());
             }
@@ -140,7 +129,7 @@ namespace ConsoleApp32
             string girlGender = "Самка";
             List<string> genders = new List<string>() { boyGender, girlGender };
 
-            return UserUtils.GenerateRandomNumber(0, genders.Count - 1) == (genders.Count - 1) ? boyGender : girlGender;
+            return UserUtils.GenerateRandomNumber(0, genders.Count) == (genders.Count - 1) ? boyGender : girlGender;
         }
     }
 
@@ -252,13 +241,28 @@ namespace ConsoleApp32
         }
     }
 
+    class AnimalsBank
+    {
+        private static List<Animal> s_animals = new List<Animal>
+        {
+            new Wolf(), new Bear(), new Lion(), new Eagle(), new WildCat(), new Snake()
+        };
+
+        public static Animal GenerateAnimal()
+        {
+            int randomIndex = UserUtils.GenerateRandomNumber(0, s_animals.Count);
+
+            return s_animals[randomIndex];
+        }
+    }
+
     class UserUtils
     {
         private static Random s_random = new Random();
 
         public static int GenerateRandomNumber(int min, int max)
         {
-            return s_random.Next(min, max + 1);
+            return s_random.Next(min, max);
         }
     }
 }
