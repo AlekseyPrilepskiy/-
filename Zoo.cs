@@ -4,17 +4,135 @@ namespace ConsoleApp6
     {
         static void Main(string[] args)
         {
-            Zoo zoo = new Zoo();
+            AnimalsGenerator animalsGenerator = new AnimalsGenerator();
+            AviariesGenerator aviariesGenerator = new AviariesGenerator(animalsGenerator);
+
+            Zoo zoo = new Zoo(aviariesGenerator);
             zoo.TakeTour();
+        }
+    }
+
+    class Animal
+    {
+        private string _name;
+        private string _sound;
+        private string _gender;
+
+        public Animal(string name, string sound)
+        {
+            _name = name;
+            _sound = sound;
+            _gender = GenerateGender();
+        }
+
+        public void MakeSound()
+        {
+            Console.WriteLine($"{_name} издает звук: {_sound}");
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine($"Вид: {_name}. Пол - {_gender}");
+        }
+
+        private string GenerateGender()
+        {
+            string boyGender = "Самец";
+            string girlGender = "Самка";
+            List<string> genders = new List<string>() { boyGender, girlGender };
+
+            return UserUtils.GenerateRandomNumber(0, genders.Count) == (genders.Count - 1) ? boyGender : girlGender;
+        }
+    }
+
+    class AnimalsGenerator
+    {
+        private List<string> _names = new List<string>
+        {
+            "Волк", "Лев", "Рысь", "Собака", "Орел", "Змея"
+        };
+
+        private List<string> _sounds = new List<string>
+        {
+            "Воет", "Рычит", "Мурчит", "Лает", "Клекочет", "Шипит"
+        };
+
+        public List<Animal> Generate()
+        {
+            int randomIndex = UserUtils.GenerateRandomNumber(0, _names.Count);
+            int minimalCount = 2;
+            int maximalCount = 8;
+            int count = UserUtils.GenerateRandomNumber(minimalCount, maximalCount);
+
+            List<Animal> animals = new List<Animal>();
+
+            for (int i = 0; i < count; i++)
+            {
+                animals.Add(new Animal(_names[randomIndex], _sounds[randomIndex]));
+            }
+
+            return animals;
+        }
+    }
+
+    class Aviary
+    {
+        private List<Animal> _animals;
+
+        public Aviary(List<Animal> animals)
+        {
+            _animals = new List<Animal>(animals);
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine($"Всего {_animals.Count} животных в вольере.\n");
+
+            for (int i = 0; i < _animals.Count; i++)
+            {
+                Console.Write($"{i + 1} - ");
+                _animals[i].ShowInfo();
+            }
+
+            Console.WriteLine("\nПрямо перед вами находится один из жителей вольера.");
+            _animals.First().MakeSound();
+        }
+    }
+
+    class AviariesGenerator
+    {
+        private AnimalsGenerator _animalsGenerator;
+
+        public AviariesGenerator(AnimalsGenerator animalsGenerator)
+        {
+            _animalsGenerator = animalsGenerator;
+        }
+
+        public List<Aviary> Generate()
+        {
+            int minimalCount = 4;
+            int maximalCount = 9;
+            int count = UserUtils.GenerateRandomNumber(minimalCount, maximalCount);
+
+            List<Aviary> aviaries = new List<Aviary>();
+
+            for (int i = 0; i < count; i++)
+            {
+                aviaries.Add(new Aviary(_animalsGenerator.Generate()));
+            }
+
+            return aviaries;
         }
     }
 
     class Zoo
     {
-        private List<Aviary> _aviaries = new List<Aviary>
+        private List<Aviary> _aviaries;
+
+        public Zoo(AviariesGenerator aviariesGenerator) 
         {
-            new Aviary(), new Aviary(), new Aviary(), new Aviary()
-        };
+            _aviaries = new List<Aviary>(aviariesGenerator.Generate());
+        }
 
         public void TakeTour()
         {
@@ -42,7 +160,6 @@ namespace ConsoleApp6
                     _aviaries[userInput].ShowInfo();
 
                     Console.WriteLine("\nНажмите любую клавишу, чтобы вернуться");
-                    Console.ReadKey();
                 }
                 else if (userInput == CommandToExit)
                 {
@@ -52,207 +169,10 @@ namespace ConsoleApp6
                 {
                     Console.WriteLine("Неверный ввод пользователя. Попробуйте снова.");
                 }
+
+                Console.ReadKey();
+                Console.Clear();
             }
-        }
-    }
-
-    class Aviary
-    {
-        private Family _animalsFamily = new Family();
-
-        public void ShowInfo()
-        {
-            _animalsFamily.ShowInfo();
-        }
-    }
-
-    class Family
-    {
-        private List<Animal> _animals = new List<Animal>();
-
-        public Family()
-        {
-            GenerateFamily();
-        }
-
-        public void ShowInfo()
-        {
-            Console.WriteLine($"Всего {_animals.Count} животных.\n");
-
-            for (int i = 0; i < _animals.Count; i++)
-            {
-                Console.Write($"{i + 1} - ");
-                _animals[i].ShowInfo();
-            }
-
-            Console.WriteLine("\nПрямо перед вами находится один из представителей.");
-            _animals.First().MakeSound();
-        }
-
-        private void GenerateFamily()
-        {
-            int minimalCount = 2;
-            int maximalCount = 8;
-            int animalsCount = UserUtils.GenerateRandomNumber(minimalCount, maximalCount);
-
-            Animal animal = AnimalsBank.GenerateAnimal();
-
-            for (int i = 0 ; i < animalsCount; i++)
-            {
-                _animals.Add(animal.Clone());
-            }
-        }
-    }
-
-    abstract class Animal
-    {
-        protected string Name;
-        protected string Gender;
-
-        public Animal()
-        {
-            Gender = GenerateGender();
-        }
-
-        public abstract void MakeSound();
-
-        public abstract Animal Clone();
-
-        public virtual void ShowInfo()
-        {
-            Console.WriteLine($"Вид: {Name}. Пол - {Gender}");
-        }
-
-        private string GenerateGender()
-        {
-            string boyGender = "Самец";
-            string girlGender = "Самка";
-            List<string> genders = new List<string>() { boyGender, girlGender };
-
-            return UserUtils.GenerateRandomNumber(0, genders.Count) == (genders.Count - 1) ? boyGender : girlGender;
-        }
-    }
-
-    class Wolf : Animal
-    {
-        public Wolf()
-        {
-            Name = "Волк";
-        }
-
-        public override void MakeSound()
-        {
-            Console.WriteLine($"{Name} воет.");
-        }
-
-        public override Animal Clone()
-        {
-            return new Wolf();
-        }
-    }
-
-    class Bear : Animal
-    {
-        public Bear()
-        {
-            Name = "Медведь";
-        }
-
-        public override void MakeSound()
-        {
-            Console.WriteLine($"{Name} устало смотрит и молчит.");
-        }
-
-        public override Animal Clone()
-        {
-            return new Bear();
-        }
-    }
-
-    class Lion : Animal
-    {
-        public Lion()
-        {
-            Name = "Лев";
-        }
-
-        public override void MakeSound()
-        {
-            Console.WriteLine($"{Name} издает громкий рык.");
-        }
-
-        public override Animal Clone()
-        {
-            return new Lion();
-        }
-    }
-
-    class Eagle : Animal
-    {
-        public Eagle()
-        {
-            Name = "Орёл";
-        }
-
-        public override void MakeSound()
-        {
-            Console.WriteLine($"{Name} издаёт клёкот.");
-        }
-
-        public override Animal Clone()
-        {
-            return new Eagle();
-        }
-    }
-
-    class WildCat : Animal
-    {
-        public WildCat()
-        {
-            Name = "Рысь";
-        }
-
-        public override void MakeSound()
-        {
-            Console.WriteLine($"{Name}, наевшись обедом, мурчит.");
-        }
-
-        public override Animal Clone()
-        {
-            return new WildCat();
-        }
-    }
-
-    class Snake : Animal
-    {
-        public Snake()
-        {
-            Name = "Змея";
-        }
-
-        public override void MakeSound()
-        {
-            Console.WriteLine($"{Name} шипит.");
-        }
-
-        public override Animal Clone()
-        {
-            return new Snake();
-        }
-    }
-
-    class AnimalsBank
-    {
-        private static List<Animal> s_animals = new List<Animal>
-        {
-            new Wolf(), new Bear(), new Lion(), new Eagle(), new WildCat(), new Snake()
-        };
-
-        public static Animal GenerateAnimal()
-        {
-            int randomIndex = UserUtils.GenerateRandomNumber(0, s_animals.Count);
-
-            return s_animals[randomIndex];
         }
     }
 
