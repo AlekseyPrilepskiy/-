@@ -1,4 +1,4 @@
-namespace ConsoleApp6
+namespace ConsoleApp32
 {
     internal class Program
     {
@@ -47,15 +47,14 @@ namespace ConsoleApp6
 
     class AnimalsGenerator
     {
-        private List<string> _names = new List<string>
-        {
-            "Волк", "Лев", "Рысь", "Собака", "Орел", "Змея"
-        };
+        private List<string> _names;
+        private List<string> _sounds;
 
-        private List<string> _sounds = new List<string>
+        public AnimalsGenerator()
         {
-            "Воет", "Рычит", "Мурчит", "Лает", "Клекочет", "Шипит"
-        };
+            _names = new List<string> { "Волк", "Лев", "Рысь", "Собака", "Орел", "Змея" };
+            _sounds = new List<string> { "Воет", "Рычит", "Мурчит", "Лает", "Клекочет", "Шипит" };
+        }
 
         public List<Animal> Generate()
         {
@@ -129,7 +128,7 @@ namespace ConsoleApp6
     {
         private List<Aviary> _aviaries;
 
-        public Zoo(AviariesGenerator aviariesGenerator) 
+        public Zoo(AviariesGenerator aviariesGenerator)
         {
             _aviaries = new List<Aviary>(aviariesGenerator.Generate());
         }
